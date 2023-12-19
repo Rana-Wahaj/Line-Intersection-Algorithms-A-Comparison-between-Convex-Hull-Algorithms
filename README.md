@@ -47,14 +47,14 @@ then by comparison with every other point in the set, it is
 determined whether the selected point should be part of the
 hull or not. Complexity of this algorithm is O(N3)2)
 
-#Jarvis March: This approach helps deselect the points
+# Jarvis March: This approach helps deselect the points
 by starting with the smallest y-coordinate point and checks
 for the next point having a counter-clockwise angle with the
 previous point. The final result gives the set of points that
 should be part of the hull. Complexity of this algorithm is
 O(Nh)
 
-#3) Graham Scan: Similar to Jarvis March, this approach
+# Graham Scan: Similar to Jarvis March, this approach
 also takes the smallest y-coordinate point as the first point and
 then points having counter-clockwise angles to the previous
 point are included in the hull. The only difference is that points
@@ -62,7 +62,7 @@ not having a counter-clockwise angle are removed from the
 set as the iterations proceed. Complexity of this algorithm is
 O(Nlog(N))
 
-#4) Point Elimination (Quick Elimination): This algorithm is
+# 4) Point Elimination (Quick Elimination): This algorithm is
 very different from the approaches discussed above.It takes the
 route of eliminating the non-hull points first and then finding
 the hull on the remaining points. The algorithm begins by
@@ -73,7 +73,7 @@ remove points inside the quadrilateral. After the removal of
 points, any other convex hull algorithm can be used to find
 the final hull. Complexity of this algorithm is O(Nlog(N))
 
-#5) Quick Hull: This algorithms is recursive in nature and
+# 5) Quick Hull: This algorithms is recursive in nature and
 works similar to quick sort.The algorithm starts with selecting
 the farthest x-coordinates on left and right in the given set
 of points. This divides the set of points into two parts.
@@ -84,7 +84,7 @@ removed. The above process is then repeated for all the line
 segements recursively to for the complete hull. Complexity of
 this algorithms is O(Nlog(N))
 
-#B. Line Intersection Algorithms
+# B. Line Intersection Algorithms
 #Counter-Clockwise Technique: The initial method employed
 involves determining the intersection between line
 segments through an assessment of their counterclockwise area
