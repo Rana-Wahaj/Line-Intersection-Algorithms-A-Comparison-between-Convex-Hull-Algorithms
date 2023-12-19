@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draw Lines with Intersection</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      cursor: crosshair;
+    }
+
+    #intersectionPoint {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<style>
+  
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3498db; /* Lighter blue color on hover */
+  color: #fff;
+}</style>
+<canvas id="myCanvas" width="500" height="300"></canvas>
+<p id="intersectionPoint">Rotate To See If Lines Intersection</p>
+<button onclick="startAnimation()">Start Animation</button>
+<button onclick="returnBack()">Return Back</button>
+
+<script>
+  var canvas = document.getElementById('myCanvas');
+  var context = canvas.getContext('2d');
+
+  var lineCount = 0;
+  var lines = [];
+  var intersectionPoint = { x: null, y: null };
+
+  function returnBack() {
+        window.location.href = 'index.html';
+  }
+  function drawLines() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < lines.length; i++) {
+      context.beginPath();
+      context.moveTo(lines[i].start.x, lines[i].start.y);
+      context.lineTo(lines[i].end.x, lines[i].end.y);
+      context.stroke();
+    }
+  }
+
+  function animateLines() {
+    // Move the lines towards each other
+    lines[0].end.x -= 1;
+    lines[0].end.y -= 1;
+    lines[1].start.x += 1;
+    lines[1].start.y += 1;
+
+    drawLines();
+
+    // Check for intersection
+    var x1 = lines[0].start.x,
+        y1 = lines[0].start.y,
+        x2 = lines[0].end.x,
+        y2 = lines[0].end.y,
+        x3 = lines[1].start.x,
+        y3 = lines[1].start.y,
+        x4 = lines[1].end.x,
+        y4 = lines[1].end.y;
+
+    var denom = ((x1 - x2) * (y3 - y4)) - ((y1 - y2) * (x3 - x4));
+    if (denom === 0) {
+      // Lines are parallel
+      return false;
+    }
+
+    intersectionPoint.x = (((x1 * y2 - y1 * x2) * (x3 - x4)) - ((x1 - x2) * (x3 * y4 - y3 * x4))) / denom;
+    intersectionPoint.y = (((x1 * y2 - y1 * x2) * (y3 - y4)) - ((y1 - y2) * (x3 * y4 - y3 * x4))) / denom;
+
+    // Display intersection point
+    document.getElementById('intersectionPoint').innerText = "Intersection Point: (" + intersectionPoint.x + ", " + intersectionPoint.y + ")";
+
+    // Draw intersection point
+    context.fillStyle = 'red';
+    context.beginPath();
+    context.arc(intersectionPoint.x, intersectionPoint.y, 5, 0, 2 * Math.PI);
+    context.fill();
+
+    return true; // Lines intersected
+  }
+
+  function startAnimation() {
+    if (lineCount < 2) {
+      alert("Please draw two lines first.");
+      return;
+    }
+
+    // Reset intersection point
+    intersectionPoint = { x: null, y: null };
+
+    // Clone the initial state of lines for animation
+    var animatedLines = JSON.parse(JSON.stringify(lines));
+
+    // Animation loop
+    var animationInterval = setInterval(function () {
+      var intersected = animateLines();
+      if (intersected) {
+        clearInterval(animationInterval);
+      }
+    }, 30); // Adjust the interval for smoother or faster animation
+  }
+
+  canvas.addEventListener('mousedown', function (e) {
+    lines[lineCount] = { start: { x: e.clientX - canvas.offsetLeft, y: e.clientY - canvas.offsetTop } };
+  });
+
+  canvas.addEventListener('mousemove', function (e) {
+    if (lineCount >= 2) return;
+
+    lines[lineCount].end = { x: e.clientX - canvas.offsetLeft, y: e.clientY - canvas.offsetTop };
+    drawLines();
+  });
+
+  canvas.addEventListener('mouseup', function () {
+    lineCount++;
+
+    if (lineCount === 2) {
+      canvas.removeEventListener('mousedown');
+      canvas.removeEventListener('mousemove');
+      canvas.removeEventListener('mouseup');
+    }
+  });
+</script>
+
+</body>
+</html>
